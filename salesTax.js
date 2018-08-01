@@ -23,6 +23,7 @@ var companySalesData = [
 ];
 function calculateSalesTax(salesData, taxRates) {
   // Implement your code here
+  var finalResult = {};
 
   var companyResult = Object.keys(salesData).map((key, index) => {
     var joinedInfo = {};
@@ -34,21 +35,27 @@ function calculateSalesTax(salesData, taxRates) {
     });
     var taxRate = taxRates[province];
     var totalTaxes = parseFloat(
-      sales.reduce((a, b) => {
-        return a * taxRate + b * taxRate;
-      })
-    ).toFixed(2);
+      parseFloat(
+        sales.reduce((a, b) => {
+          return a * taxRate + b * taxRate;
+        })
+      ).toFixed(2)
+    );
+
     var total = {
       totalSales,
       totalTaxes
     };
 
-    joinedInfo[name] = total;
-
-    return joinedInfo;
+    if (!finalResult[name]) {
+      finalResult[name] = total;
+    } else if (finalResult[name]) {
+      finalResult[name].totalSales += totalSales;
+      finalResult[name].totalTaxes += totalTaxes;
+    }
   });
 
-  return companyResult;
+  return finalResult;
 }
 
 var results = calculateSalesTax(companySalesData, salesTaxRates);
